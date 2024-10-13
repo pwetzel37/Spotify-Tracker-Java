@@ -1,7 +1,7 @@
 package mainapp;
 
-import spotifyapi.components.GetTopArtistsButton;
-import spotifyapi.components.PrintDataPanel;
+import mainapp.components.GetTopArtistsButton;
+import mainapp.components.PrintDataPanel;
 
 import javax.swing.*;
 import java.awt.*;
