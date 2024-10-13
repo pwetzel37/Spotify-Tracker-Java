@@ -43,7 +43,7 @@ public class GetTopArtistsButton extends JPanel {
      */
     private void updatePrintDataPanel() {
         try {
-            System.out.println("attempting to get top artists");
+            System.out.println("Attempting to get top artists...");
             topArtists = spotifyConnection.getTopArtists();
         } catch (Exception ex) {
             ex.printStackTrace();

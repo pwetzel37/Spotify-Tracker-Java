@@ -25,7 +25,6 @@ public class SpotifyConnection {
     private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8080/");
     private String authorizationCode;
 
-    // For all requests an access token is needed
     private SpotifyApi spotifyApi = new SpotifyApi.Builder()
       .setClientId(clientId)
       .setClientSecret(clientSecret)
@@ -55,11 +54,10 @@ public class SpotifyConnection {
 
             // Wait for the authorization code
             while (authorizationCode == null) {
-                Thread.sleep(1000); // Sleep briefly to avoid busy-waiting
+                System.out.println("Waiting for authorization code...");
+                Thread.sleep(100); // Sleep briefly to avoid busy-waiting
             }
 
-            // Print the authorization code and stop server
-            System.out.println("Authorization Code: " + authorizationCode);
             setAccessToken(authorizationCode);
             server.stop(0);
         } catch (Exception e) {
@@ -74,10 +72,11 @@ public class SpotifyConnection {
 
             String query = exchange.getRequestURI().getQuery();
             if (query != null && query.contains("code=")) {
-                authorizationCode = query.split("=")[1];
                 // Respond to the browser
+                authorizationCode = query.split("=")[1];
                 String response = "Authorization successful! You can close this window.";
                 exchange.sendResponseHeaders(200, response.length());
+
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
@@ -85,6 +84,7 @@ public class SpotifyConnection {
                 // Handle the case where code is not present
                 String response = "Authorization failed!";
                 exchange.sendResponseHeaders(400, response.length());
+
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
