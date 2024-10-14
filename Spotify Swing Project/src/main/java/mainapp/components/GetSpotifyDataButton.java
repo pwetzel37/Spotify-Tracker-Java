@@ -44,12 +44,7 @@ public class GetSpotifyDataButton extends JPanel {
     private void updatePrintDataPanel(String dataType) {
         try {
             System.out.println("Attempting to get data...");
-            Object[] data = null;
-            if (dataType.equals("Artist")) {
-                data = spotifyConnection.getTopArtists();
-            } else if (dataType.equals("Track")) {
-                data = spotifyConnection.getTopTracks();
-            }
+            Object[] data = getDataObjects(dataType);
 
             JPanel printDataPanel = (JPanel) cards.getComponent(1);
             JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
@@ -71,6 +66,19 @@ public class GetSpotifyDataButton extends JPanel {
 
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private Object[] getDataObjects(String dataType) {
+        try {
+            return switch (dataType) {
+                case "Artist" -> spotifyConnection.getTopArtists();
+                case "Track" -> spotifyConnection.getTopTracks();
+                default -> new Object[0]; // Return an empty array for unsupported types
+            };
+        } catch (Exception ex) {
+            System.err.println("Error fetching data for type: " + dataType + ". " + ex.getMessage());
+            return new Object[0]; // Return an empty array on error
         }
     }
 }
