@@ -12,15 +12,15 @@ public class MainApp extends JFrame {
 
     public MainApp() {
         JPanel getAuthorizationCodePanel = createButtonsPanel();
-        JPanel printDataPanel = new PrintDataPanel();
+        JPanel printDataPanel = new PrintDataPanel(cards);
 
-        cards.add(getAuthorizationCodePanel, "Get Authorization Code Panel");
+        cards.add(getAuthorizationCodePanel, "Buttons Panel");
         cards.add(printDataPanel, "Print Data Panel");
 
         add(cards);
 
         setTitle("Spotify Tracker");
-        setSize(750, 380);
+        setSize(750, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
         setVisible(true);
