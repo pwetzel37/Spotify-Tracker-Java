@@ -1,6 +1,7 @@
 package mainapp;
 
 import mainapp.components.GetTopArtistsButton;
+import mainapp.components.GetTopTracksButton;
 import mainapp.components.PrintDataPanel;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ public class MainApp extends JFrame {
     private final JPanel cards = new JPanel(new CardLayout());
 
     public MainApp() {
-        JPanel getAuthorizationCodePanel = createGetAuthorizationCodePanel();
+        JPanel getAuthorizationCodePanel = createButtonsPanel();
         JPanel printDataPanel = new PrintDataPanel();
 
         cards.add(getAuthorizationCodePanel, "Get Authorization Code Panel");
@@ -29,12 +30,13 @@ public class MainApp extends JFrame {
     /**
      * Creates the panel for obtaining an authorization code from Spotify.
      */
-    private JPanel createGetAuthorizationCodePanel() {
+    private JPanel createButtonsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         // Add components to the panel
         panel.add(new GetTopArtistsButton(cards));
+        panel.add(new GetTopTracksButton(cards));
 
         return panel;
     }

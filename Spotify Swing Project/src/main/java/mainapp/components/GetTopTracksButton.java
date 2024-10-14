@@ -1,27 +1,28 @@
 package mainapp.components;
 
-import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 import spotifyapi.SpotifyConnection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
-public class GetTopArtistsButton extends JPanel {
+public class GetTopTracksButton extends JPanel {
 
-    private Artist[] topArtists;
+    private Track[] topTracks;
     private final JPanel cards;
     private final SpotifyConnection spotifyConnection = new SpotifyConnection();
 
-    public GetTopArtistsButton(JPanel cards) {
+    public GetTopTracksButton(JPanel cards) {
         this.cards = cards;
 
         // Set the layout for the panel
         setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // Create the button
-        JButton getTopArtistsButton = new JButton("Get Top Artists");
+        JButton getTopTracksButton = new JButton("Get Top Tracks");
         // Add an action listener to the button
-        getTopArtistsButton.addActionListener(e -> {
+        getTopTracksButton.addActionListener(e -> {
             spotifyConnection.authorizeUser();
             updatePrintDataPanel();
 
@@ -31,7 +32,7 @@ public class GetTopArtistsButton extends JPanel {
         });
 
         // Add the button to the panel
-        add(getTopArtistsButton);
+        add(getTopTracksButton);
 
         // Set the border for spacing
         setBorder(BorderFactory.createEmptyBorder(15, 0, 50, 0));
@@ -43,20 +44,20 @@ public class GetTopArtistsButton extends JPanel {
      */
     private void updatePrintDataPanel() {
         try {
-            System.out.println("Attempting to get top artists...");
-            topArtists = spotifyConnection.getTopArtists();
+            System.out.println("Attempting to get top tracks...");
+            topTracks = spotifyConnection.getTopTracks();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         JPanel printDataPanel = (JPanel) cards.getComponent(1);
-        JLabel artistLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
+        JLabel trackLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
 
-        StringBuilder artistString = new StringBuilder("<html>");
-        for (Artist artist : topArtists) {
-            artistString.append(String.format("<b>%s</b>: %,d followers<br>", artist.getName(), artist.getFollowers().getTotal()));
+        StringBuilder trackString = new StringBuilder("<html>");
+        for (Track track : topTracks) {
+            trackString.append(String.format("%s - %s (%s)<br>", track.getName(), track.getArtists()[0].getName(), track.getAlbum().getName()));
         }
-        artistString.append("</html>");
-        artistLabel.setText(artistString.toString());
+        trackString.append("</html>");
+        trackLabel.setText(trackString.toString());
     }
 }

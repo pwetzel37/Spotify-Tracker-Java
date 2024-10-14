@@ -10,6 +10,7 @@ import se.michaelthelin.spotify.enums.AuthorizationScope;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
@@ -31,7 +32,7 @@ public class SpotifyConnection {
       .setRedirectUri(redirectUri)
       .build();
 
-    public void getAuthorizationCode() {
+    public void authorizeUser() {
         try {
             AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().scope(AuthorizationScope.USER_TOP_READ).build();
             URI uri = authorizationCodeUriRequest.execute();
@@ -106,5 +107,9 @@ public class SpotifyConnection {
 
     public Artist[] getTopArtists() throws IOException, ParseException, SpotifyWebApiException {
         return spotifyApi.getUsersTopArtists().build().execute().getItems();
+    }
+
+    public Track[] getTopTracks() throws IOException, ParseException, SpotifyWebApiException {
+        return spotifyApi.getUsersTopTracks().build().execute().getItems();
     }
 }
