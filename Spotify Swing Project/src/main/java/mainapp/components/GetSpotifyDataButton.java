@@ -50,20 +50,16 @@ public class GetSpotifyDataButton extends JPanel {
             JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
 
             StringBuilder dataString = new StringBuilder("<html>");
-            if (dataType.equals("Artist")) {
-                for (Object obj : data) {
-                    Artist artist = (Artist) obj;
+            for (Object obj : data) {
+                if (obj instanceof Artist artist) {
                     dataString.append(String.format("<b>%s</b>: %,d followers<br>", artist.getName(), artist.getFollowers().getTotal()));
-                }
-            } else if (dataType.equals("Track")) {
-                for (Object obj : data) {
-                    Track track = (Track) obj;
+                } else if (obj instanceof Track track) {
                     dataString.append(String.format("%s - %s (%s)<br>", track.getName(), track.getArtists()[0].getName(), track.getAlbum().getName()));
                 }
             }
             dataString.append("</html>");
-            dataLabel.setText(dataString.toString());
 
+            dataLabel.setText(dataString.toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
