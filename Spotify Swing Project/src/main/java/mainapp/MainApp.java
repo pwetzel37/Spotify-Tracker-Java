@@ -20,7 +20,7 @@ public class MainApp extends JFrame {
         add(cards);
 
         setTitle("Spotify Tracker");
-        setSize(600, 380);
+        setSize(750, 380);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
         setVisible(true);
@@ -34,8 +34,9 @@ public class MainApp extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         // Add components to the panel
-        panel.add(new GetSpotifyDataButton(cards, "Get Top Artists", "Artist"));
-        panel.add(new GetSpotifyDataButton(cards, "Get Top Tracks", "Track"));
+        panel.add(new GetSpotifyDataButton(cards, "Get Top Artists", "Artists"));
+        panel.add(new GetSpotifyDataButton(cards, "Get Top Tracks", "Tracks"));
+        panel.add(new GetSpotifyDataButton(cards, "Get Saved Tracks", "SavedTracks"));
 
         return panel;
     }

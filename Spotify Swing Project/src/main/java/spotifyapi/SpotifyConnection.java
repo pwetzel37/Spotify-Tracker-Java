@@ -10,6 +10,7 @@ import se.michaelthelin.spotify.enums.AuthorizationScope;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
@@ -32,9 +33,31 @@ public class SpotifyConnection {
       .setRedirectUri(redirectUri)
       .build();
 
+    private AuthorizationScope[] authorizationScopes = {
+      AuthorizationScope.APP_REMOTE_CONTROL,
+      AuthorizationScope.PLAYLIST_MODIFY_PRIVATE,
+      AuthorizationScope.PLAYLIST_MODIFY_PUBLIC,
+      AuthorizationScope.PLAYLIST_READ_COLLABORATIVE,
+      AuthorizationScope.PLAYLIST_READ_PRIVATE,
+      AuthorizationScope.STREAMING,
+      AuthorizationScope.UGC_IMAGE_UPLOAD,
+      AuthorizationScope.USER_FOLLOW_MODIFY,
+      AuthorizationScope.USER_FOLLOW_READ,
+      AuthorizationScope.USER_LIBRARY_MODIFY,
+      AuthorizationScope.USER_LIBRARY_READ,
+      AuthorizationScope.USER_MODIFY_PLAYBACK_STATE,
+      AuthorizationScope.USER_READ_CURRENTLY_PLAYING,
+      AuthorizationScope.USER_READ_EMAIL,
+      AuthorizationScope.USER_READ_PLAYBACK_POSITION,
+      AuthorizationScope.USER_READ_PLAYBACK_STATE,
+      AuthorizationScope.USER_READ_PRIVATE,
+      AuthorizationScope.USER_READ_RECENTLY_PLAYED,
+      AuthorizationScope.USER_TOP_READ
+    };
+
     public void authorizeUser() {
         try {
-            AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().scope(AuthorizationScope.USER_TOP_READ).build();
+            AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().scope(authorizationScopes).build();
             URI uri = authorizationCodeUriRequest.execute();
 
             HttpServer server = HttpServer.create(new java.net.InetSocketAddress(8080), 0);
@@ -111,5 +134,9 @@ public class SpotifyConnection {
 
     public Track[] getTopTracks() throws IOException, ParseException, SpotifyWebApiException {
         return spotifyApi.getUsersTopTracks().build().execute().getItems();
+    }
+
+    public SavedTrack[] getSavedTracks() throws IOException, ParseException, SpotifyWebApiException {
+        return spotifyApi.getUsersSavedTracks().build().execute().getItems();
     }
 }

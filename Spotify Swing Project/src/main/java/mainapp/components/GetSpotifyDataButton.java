@@ -1,6 +1,7 @@
 package mainapp.components;
 
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import spotifyapi.SpotifyConnection;
 
@@ -55,6 +56,8 @@ public class GetSpotifyDataButton extends JPanel {
                     dataString.append(String.format("<b>%s</b>: %,d followers<br>", artist.getName(), artist.getFollowers().getTotal()));
                 } else if (obj instanceof Track track) {
                     dataString.append(String.format("%s - %s (%s)<br>", track.getName(), track.getArtists()[0].getName(), track.getAlbum().getName()));
+                } else if (obj instanceof SavedTrack savedTrack) {
+                    dataString.append(String.format("%s - %s (%s)<br>", savedTrack.getTrack().getName(), savedTrack.getTrack().getArtists()[0].getName(), savedTrack.getTrack().getAlbum().getName()));
                 }
             }
             dataString.append("</html>");
@@ -68,8 +71,9 @@ public class GetSpotifyDataButton extends JPanel {
     private Object[] getDataObjects(String dataType) {
         try {
             return switch (dataType) {
-                case "Artist" -> spotifyConnection.getTopArtists();
-                case "Track" -> spotifyConnection.getTopTracks();
+                case "Artists" -> spotifyConnection.getTopArtists();
+                case "Tracks" -> spotifyConnection.getTopTracks();
+                case "SavedTracks" -> spotifyConnection.getSavedTracks();
                 default -> new Object[0]; // Return an empty array for unsupported types
             };
         } catch (Exception ex) {
