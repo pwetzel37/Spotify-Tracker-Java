@@ -8,12 +8,12 @@ import spotifyapi.SpotifyConnection;
 import javax.swing.*;
 import java.awt.*;
 
-public class GetSpotifyDataButton extends JPanel {
+public class GetUserDataButton extends JPanel {
 
     private final JPanel cards;
     private final SpotifyConnection spotifyConnection = new SpotifyConnection();
 
-    public GetSpotifyDataButton(JPanel cards, String buttonLabel, String dataType) {
+    public GetUserDataButton(JPanel cards, String buttonLabel, String dataType) {
         this.cards = cards;
 
         // Set the layout for the panel

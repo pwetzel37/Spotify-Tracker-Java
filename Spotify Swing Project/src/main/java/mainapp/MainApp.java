@@ -1,6 +1,6 @@
 package mainapp;
 
-import mainapp.components.GetSpotifyDataButton;
+import mainapp.components.GetUserDataButton;
 import mainapp.components.PrintDataPanel;
 
 import javax.swing.*;
@@ -34,9 +34,9 @@ public class MainApp extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         // Add components to the panel
-        panel.add(new GetSpotifyDataButton(cards, "Get Top Artists", "Artists"));
-        panel.add(new GetSpotifyDataButton(cards, "Get Top Tracks", "Tracks"));
-        panel.add(new GetSpotifyDataButton(cards, "Get Saved Tracks", "SavedTracks"));
+        panel.add(new GetUserDataButton(cards, "Get Top Artists", "Artists"));
+        panel.add(new GetUserDataButton(cards, "Get Top Tracks", "Tracks"));
+        panel.add(new GetUserDataButton(cards, "Get Saved Tracks", "SavedTracks"));
 
         return panel;
     }

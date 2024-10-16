@@ -21,10 +21,15 @@ public class PrintDataPanel extends JPanel {
             cardLayout.show(cards, "Buttons Panel");
         });
 
+        JPanel backButtonWrapper = new JPanel();
+        backButtonWrapper.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        backButtonWrapper.setLayout(new FlowLayout(FlowLayout.CENTER));
+        backButtonWrapper.add(backButton);
+
         putClientProperty("printDataPanel", label);
-        putClientProperty("backButton", backButton);
+        putClientProperty("backButton", backButtonWrapper);
 
         add(label);
-        add(backButton);
+        add(backButtonWrapper);
     }
 }
