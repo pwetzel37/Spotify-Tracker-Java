@@ -15,16 +15,15 @@ public class MainApp extends JFrame {
     public MainApp() {
         spotifyConnection.authorizeUser();
 
-        JPanel getAuthorizationCodePanel = createButtonsPanel();
-        JPanel printDataPanel = new PrintDataPanel(cards);
+        JPanel buttonsPanel = createButtonsPanel();
+        JPanel printDataPanel = new PrintDataPanel(this, cards);
 
-        cards.add(getAuthorizationCodePanel, "Buttons Panel");
+        cards.add(buttonsPanel, "Buttons Panel");
         cards.add(printDataPanel, "Print Data Panel");
 
         add(cards);
 
         setTitle("Spotify Tracker");
-        setSize(750, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
         setVisible(true);
@@ -35,12 +34,13 @@ public class MainApp extends JFrame {
      */
     private JPanel createButtonsPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        this.setSize(700, 100);
 
         // Add components to the panel
-        panel.add(new GetUserDataButton(spotifyConnection, cards, "Get Top Artists", "Artists"));
-        panel.add(new GetUserDataButton(spotifyConnection, cards, "Get Top Tracks", "Tracks"));
-        panel.add(new GetUserDataButton(spotifyConnection, cards, "Get Saved Tracks", "SavedTracks"));
+        panel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Artists", "Artists"));
+        panel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Tracks", "Tracks"));
+        panel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Saved Tracks", "SavedTracks"));
 
         return panel;
     }

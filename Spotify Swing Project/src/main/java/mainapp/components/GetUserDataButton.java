@@ -13,7 +13,13 @@ public class GetUserDataButton extends JPanel {
     private final JPanel cards;
     private final SpotifyConnection spotifyConnection;
 
-    public GetUserDataButton(SpotifyConnection spotifyConnection, JPanel cards, String buttonLabel, String dataType) {
+    public GetUserDataButton(
+      JFrame mainAppFrame,
+      SpotifyConnection spotifyConnection,
+      JPanel cards,
+      String buttonLabel,
+      String dataType)
+    {
         this.cards = cards;
         this.spotifyConnection = spotifyConnection;
 
@@ -25,6 +31,9 @@ public class GetUserDataButton extends JPanel {
 
         // Add an action listener to the button
         getSpotifyDataButton.addActionListener(e -> {
+            // Change the size of the MainApp frame
+            mainAppFrame.setSize(750, 425);
+
             updatePrintDataPanel(dataType);
 
             // Change panel

@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class PrintDataPanel extends JPanel {
 
-    public PrintDataPanel(JPanel cards) {
+    public PrintDataPanel(JFrame mainAppFrame, JPanel cards) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JLabel label = new JLabel();
@@ -15,6 +15,9 @@ public class PrintDataPanel extends JPanel {
         // Create button
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
+            // Change the size of the MainApp frame
+            mainAppFrame.setSize(750, 100);
+
             // Change panel on click
             CardLayout cardLayout = (CardLayout) (cards.getLayout());
             cardLayout.show(cards, "Buttons Panel");
