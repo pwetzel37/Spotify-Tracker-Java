@@ -11,10 +11,11 @@ import java.awt.*;
 public class GetUserDataButton extends JPanel {
 
     private final JPanel cards;
-    private final SpotifyConnection spotifyConnection = new SpotifyConnection();
+    private final SpotifyConnection spotifyConnection;
 
-    public GetUserDataButton(JPanel cards, String buttonLabel, String dataType) {
+    public GetUserDataButton(SpotifyConnection spotifyConnection, JPanel cards, String buttonLabel, String dataType) {
         this.cards = cards;
+        this.spotifyConnection = spotifyConnection;
 
         // Set the layout for the panel
         setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -24,7 +25,6 @@ public class GetUserDataButton extends JPanel {
 
         // Add an action listener to the button
         getSpotifyDataButton.addActionListener(e -> {
-            spotifyConnection.authorizeUser();
             updatePrintDataPanel(dataType);
 
             // Change panel
