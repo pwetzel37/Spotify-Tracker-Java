@@ -12,24 +12,23 @@ public class PrintDataPanel extends JPanel {
         label.setLayout(new FlowLayout(FlowLayout.CENTER));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Create button
         JButton backButton = new JButton("Back");
-        backButton.setLayout(new FlowLayout(FlowLayout.CENTER));
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // Change panel on click
         backButton.addActionListener(e -> {
+            // Change panel on click
             CardLayout cardLayout = (CardLayout) (cards.getLayout());
             cardLayout.show(cards, "Buttons Panel");
         });
 
+        // Create wrapper to add padding
         JPanel backButtonWrapper = new JPanel();
-        backButtonWrapper.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        backButtonWrapper.setLayout(new FlowLayout(FlowLayout.CENTER));
         backButtonWrapper.add(backButton);
+        backButtonWrapper.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        putClientProperty("printDataPanel", label);
-        putClientProperty("backButton", backButtonWrapper);
-
+        // Add components to the panel
         add(label);
         add(backButtonWrapper);
+        putClientProperty("printDataPanel", label);
+        putClientProperty("backButton", backButtonWrapper);
     }
 }

@@ -50,6 +50,7 @@ public class GetUserDataButton extends JPanel {
             JPanel printDataPanel = (JPanel) cards.getComponent(1);
             JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
 
+            // Build string based off type of object requested
             StringBuilder dataString = new StringBuilder("<html>");
             for (Object obj : data) {
                 if (obj instanceof Artist artist) {
