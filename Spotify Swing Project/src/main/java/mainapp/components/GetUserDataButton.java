@@ -60,7 +60,7 @@ public class GetUserDataButton extends JPanel {
             JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
 
             // Build string based off type of object requested
-            StringBuilder dataString = new StringBuilder("<html>");
+            StringBuilder dataString = new StringBuilder("<html><div style='text-align: center;'>");
             for (Object obj : data) {
                 if (obj instanceof Artist artist) {
                     dataString.append(String.format("<b>%s</b>: %,d followers<br>", artist.getName(), artist.getFollowers().getTotal()));
