@@ -53,32 +53,55 @@ public class GetUserDataButton extends JPanel {
      */
     private void updatePrintDataPanel(String dataType) {
         try {
-            System.out.println("Attempting to get data...");
-            Object[] data = getDataObjects(dataType);
+            Object[] data = fetchData(dataType);
 
             JPanel printDataPanel = (JPanel) cards.getComponent(1);
             JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
 
-            // Build string based off type of object requested
-            StringBuilder dataString = new StringBuilder("<html><div style='text-align: center;'>");
-            for (Object obj : data) {
-                if (obj instanceof Artist artist) {
-                    dataString.append(String.format("<b>%s</b>: %,d followers<br>", artist.getName(), artist.getFollowers().getTotal()));
-                } else if (obj instanceof Track track) {
-                    dataString.append(String.format("%s - %s (%s)<br>", track.getName(), track.getArtists()[0].getName(), track.getAlbum().getName()));
-                } else if (obj instanceof SavedTrack savedTrack) {
-                    dataString.append(String.format("%s - %s (%s)<br>", savedTrack.getTrack().getName(), savedTrack.getTrack().getArtists()[0].getName(), savedTrack.getTrack().getAlbum().getName()));
-                }
+            if (dataLabel != null) {
+                dataLabel.setText(buildDataString(data));
             }
-            dataString.append("</html>");
-
-            dataLabel.setText(dataString.toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private Object[] getDataObjects(String dataType) {
+
+    /**
+     * Builds an HTML-formatted string for display based on the data objects.
+     */
+    private String buildDataString(Object[] data) {
+        StringBuilder dataString = new StringBuilder("<html><div style='text-align: center;'>");
+
+        for (Object obj : data) {
+            if (obj instanceof Artist artist) {
+                dataString.append(formatArtistData(artist));
+            } else if (obj instanceof Track track) {
+                dataString.append(formatTrackData(track));
+            } else if (obj instanceof SavedTrack savedTrack) {
+                dataString.append(formatTrackData(savedTrack.getTrack()));
+            }
+        }
+
+        dataString.append("</div></html>");
+        return dataString.toString();
+    }
+
+    /**
+     * Formats artist data into a string.
+     */
+    private String formatArtistData(Artist artist) {
+        return String.format("<b>%s</b>: %,d followers<br>", artist.getName(), artist.getFollowers().getTotal());
+    }
+
+    /**
+     * Formats track data into a string.
+     */
+    private String formatTrackData(Track track) {
+        return String.format("%s - %s (%s)<br>", track.getName(), track.getArtists()[0].getName(), track.getAlbum().getName());
+    }
+
+    private Object[] fetchData(String dataType) {
         try {
             return switch (dataType) {
                 case "Artists" -> spotifyConnection.getTopArtists();
