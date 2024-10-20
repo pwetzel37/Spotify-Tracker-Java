@@ -49,18 +49,14 @@ public class GetUserDataButton extends JPanel {
     }
 
     /**
-     * Updates the printDataPanel with the latest data, either Artists or Tracks depending on dataType.
+     * Updates the printDataPanel with the latest data depending on dataType.
      */
     private void updatePrintDataPanel(String dataType) {
         try {
-            Object[] data = fetchData(dataType);
-
             JPanel printDataPanel = (JPanel) cards.getComponent(1);
             JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
-
-            if (dataLabel != null) {
-                dataLabel.setText(buildDataString(data));
-            }
+            dataLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            dataLabel.setText(buildDataString(fetchData(dataType)));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -101,6 +97,9 @@ public class GetUserDataButton extends JPanel {
         return String.format("%s - %s (%s)<br>", track.getName(), track.getArtists()[0].getName(), track.getAlbum().getName());
     }
 
+    /**
+     * Fetches data from Spotify based on the dataType passed in.
+     */
     private Object[] fetchData(String dataType) {
         try {
             return switch (dataType) {

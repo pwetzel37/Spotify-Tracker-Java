@@ -13,27 +13,30 @@ import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
-import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
 import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URI;
 
 public class SpotifyConnection {
 
-    private static final String clientId = "69988c8c50ba43819bb74ffd852f2852";
-    private static final String clientSecret = "9a2eb1989e31438c898a3810c51ce3dc";
-    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8080/");
+    private static final String CLIENT_ID = "69988c8c50ba43819bb74ffd852f2852";
+    private static final String CLIENT_SECRET = "9a2eb1989e31438c898a3810c51ce3dc";
+    private static final URI REDIRECT_URI = SpotifyHttpManager.makeUri("http://localhost:8080/");
+    private static final String AUTH_SUCCESS_MSG = "Authorization successful! You can close this window.";
+    private static final String AUTH_FAIL_MSG = "Authorization failed!";
+
     private String authorizationCode;
 
-    private SpotifyApi spotifyApi = new SpotifyApi.Builder()
-      .setClientId(clientId)
-      .setClientSecret(clientSecret)
-      .setRedirectUri(redirectUri)
+    private final SpotifyApi spotifyApi = new SpotifyApi.Builder()
+      .setClientId(CLIENT_ID)
+      .setClientSecret(CLIENT_SECRET)
+      .setRedirectUri(REDIRECT_URI)
       .build();
 
-    private AuthorizationScope[] authorizationScopes = {
+    private final AuthorizationScope[] authorizationScopes = {
       AuthorizationScope.APP_REMOTE_CONTROL,
       AuthorizationScope.PLAYLIST_MODIFY_PRIVATE,
       AuthorizationScope.PLAYLIST_MODIFY_PUBLIC,
@@ -57,74 +60,83 @@ public class SpotifyConnection {
 
     public void authorizeUser() {
         try {
-            AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().scope(authorizationScopes).build();
-            URI uri = authorizationCodeUriRequest.execute();
+            URI authUri = spotifyApi.authorizationCodeUri()
+              .scope(authorizationScopes)
+              .build()
+              .execute();
 
-            HttpServer server = HttpServer.create(new java.net.InetSocketAddress(8080), 0);
-            server.createContext("/", new AuthHandler());
-            server.start();
+            HttpServer server = createHttpServer();
+            openBrowser(authUri);
 
-            if (Desktop.isDesktopSupported()) {
-                Desktop desktop = Desktop.getDesktop();
-                // Check if browsing is supported
-                if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                    desktop.browse(uri);
-                } else {
-                    System.out.println("BROWSE action is not supported on this platform.");
-                }
-            } else {
-                System.out.println("Desktop class is not supported on this platform.");
-            }
+            // Wait for the authorization code asynchronously
+            waitForAuthorizationCode();
 
-            // Wait for the authorization code
-            while (authorizationCode == null) {
-                System.out.println("Waiting for authorization code...");
-                Thread.sleep(100); // Sleep briefly to avoid busy-waiting
-            }
-
-            setAccessToken(authorizationCode);
             server.stop(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private HttpServer createHttpServer() throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        server.createContext("/", new AuthHandler());
+        server.start();
+        return server;
+    }
+
+    private void openBrowser(URI uri) {
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                try {
+                    desktop.browse(uri);
+                } catch (IOException e) {
+                    System.err.println("Error opening browser: " + e.getMessage());
+                }
+            } else {
+                System.out.println("BROWSE action is not supported on this platform.");
+            }
+        } else {
+            System.out.println("Desktop class is not supported on this platform.");
+        }
+    }
+
+    private void waitForAuthorizationCode() throws InterruptedException {
+        while (authorizationCode == null) {
+            System.out.println("Waiting for authorization code...");
+            Thread.sleep(100); // Sleep briefly to avoid busy-waiting
+        }
+        setAccessToken(authorizationCode);
+    }
+
     private class AuthHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            System.out.println("Received request: " + exchange.getRequestURI());
-
             String query = exchange.getRequestURI().getQuery();
             if (query != null && query.contains("code=")) {
-                // Respond to the browser
                 authorizationCode = query.split("=")[1];
-                String response = "Authorization successful! You can close this window.";
-                exchange.sendResponseHeaders(200, response.length());
-
-                OutputStream os = exchange.getResponseBody();
-                os.write(response.getBytes());
-                os.close();
+                sendResponse(exchange, 200, AUTH_SUCCESS_MSG);
             } else {
-                // Handle the case where code is not present
-                String response = "Authorization failed!";
-                exchange.sendResponseHeaders(400, response.length());
-
-                OutputStream os = exchange.getResponseBody();
-                os.write(response.getBytes());
-                os.close();
+                sendResponse(exchange, 400, AUTH_FAIL_MSG);
             }
+        }
+    }
+
+    private void sendResponse(HttpExchange exchange, int statusCode, String response) throws IOException {
+        exchange.sendResponseHeaders(statusCode, response.length());
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(response.getBytes());
         }
     }
 
     public void setAccessToken(String authorizationCode) {
         try {
             AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(authorizationCode).build();
-            AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
-
-            spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
-            spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-        } catch (Exception e) {
-            e.printStackTrace();
+            AuthorizationCodeCredentials credentials = authorizationCodeRequest.execute();
+            spotifyApi.setAccessToken(credentials.getAccessToken());
+            spotifyApi.setRefreshToken(credentials.getRefreshToken());
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            System.err.println("Error setting access token: " + e.getMessage());
         }
     }
 
@@ -144,7 +156,7 @@ public class SpotifyConnection {
         try {
             return spotifyApi.getCurrentUsersProfile().build().execute().getDisplayName();
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("Error fetching user profile: " + e.getMessage());
             return "";
         }
     }
