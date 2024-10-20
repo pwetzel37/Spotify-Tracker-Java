@@ -139,4 +139,13 @@ public class SpotifyConnection {
     public SavedTrack[] getSavedTracks() throws IOException, ParseException, SpotifyWebApiException {
         return spotifyApi.getUsersSavedTracks().build().execute().getItems();
     }
+
+    public String getUsersName() {
+        try {
+            return spotifyApi.getCurrentUsersProfile().build().execute().getDisplayName();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return "";
+        }
+    }
 }

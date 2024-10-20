@@ -23,26 +23,39 @@ public class MainApp extends JFrame {
 
         add(cards);
 
+        setVisible(true);
+        setResizable(false);
+        setLayout(new FlowLayout());
         setTitle("Spotify Tracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
-        setVisible(true);
     }
 
     /**
      * Creates the panel for obtaining an authorization code from Spotify.
      */
     private JPanel createButtonsPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        this.setSize(700, 100);
+        // Create the main panel with vertical layout to stack the label and buttons
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        // Add components to the panel
-        panel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Artists", "Artists"));
-        panel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Tracks", "Tracks"));
-        panel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Saved Tracks", "SavedTracks"));
+        // Create a label
+        JLabel label = new JLabel(spotifyConnection.getUsersName());
 
-        return panel;
+        // Create the buttons panel with horizontal layout
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+        this.setSize(650, 125);
+
+        // Add buttons to the buttons panel
+        buttonsPanel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Artists", "Artists"));
+        buttonsPanel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Tracks", "Tracks"));
+        buttonsPanel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Saved Tracks", "SavedTracks"));
+
+        // Add the label and the buttons panel to the main panel
+        mainPanel.add(label);
+        mainPanel.add(buttonsPanel);
+
+        return mainPanel;
     }
 
     public static void main(String[] args) {
