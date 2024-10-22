@@ -10,6 +10,7 @@ import se.michaelthelin.spotify.enums.AuthorizationScope;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
@@ -140,24 +141,48 @@ public class SpotifyConnection {
         }
     }
 
-    public Artist[] getTopArtists() throws IOException, ParseException, SpotifyWebApiException {
-        return spotifyApi.getUsersTopArtists().build().execute().getItems();
+    public Artist[] getTopArtists() {
+        try {
+            return spotifyApi.getUsersTopArtists().build().execute().getItems();
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            return new Artist[0];
+        }
     }
 
-    public Track[] getTopTracks() throws IOException, ParseException, SpotifyWebApiException {
-        return spotifyApi.getUsersTopTracks().build().execute().getItems();
+    public Track[] getTopTracks() {
+        try {
+            return spotifyApi.getUsersTopTracks().build().execute().getItems();
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            return new Track[0];
+        }
     }
 
-    public SavedTrack[] getSavedTracks() throws IOException, ParseException, SpotifyWebApiException {
-        return spotifyApi.getUsersSavedTracks().build().execute().getItems();
+    public SavedTrack[] getSavedTracks() {
+        try {
+            return spotifyApi.getUsersSavedTracks().build().execute().getItems();
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            return new SavedTrack[0];
+        }
     }
 
     public String getUsersName() {
         try {
             return spotifyApi.getCurrentUsersProfile().build().execute().getDisplayName();
         } catch (Exception e) {
-            System.err.println("Error fetching user profile: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
             return "";
+        }
+    }
+
+    public PlaylistSimplified[] getListOfCurrentUsersPlaylists() {
+        try {
+            return spotifyApi.getListOfCurrentUsersPlaylists().build().execute().getItems();
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            return new PlaylistSimplified[0];
         }
     }
 }

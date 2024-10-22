@@ -44,12 +44,13 @@ public class MainApp extends JFrame {
         // Create the buttons panel with horizontal layout
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
-        this.setSize(650, 125);
+        this.setSize(750, 125);
 
         // Add buttons to the buttons panel
         buttonsPanel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Artists", "Artists"));
         buttonsPanel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Top Tracks", "Tracks"));
         buttonsPanel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Saved Tracks", "SavedTracks"));
+        buttonsPanel.add(new GetUserDataButton(this, spotifyConnection, cards, "Get Saved Playlists", "SavedPlaylists"));
 
         // Add the label and the buttons panel to the main panel
         mainPanel.add(label);

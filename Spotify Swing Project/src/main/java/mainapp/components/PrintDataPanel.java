@@ -16,7 +16,7 @@ public class PrintDataPanel extends JPanel {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             // Change the size of the MainApp frame
-            mainAppFrame.setSize(650, 125);
+            mainAppFrame.setSize(750, 125);
 
             // Change panel on click
             CardLayout cardLayout = (CardLayout) (cards.getLayout());

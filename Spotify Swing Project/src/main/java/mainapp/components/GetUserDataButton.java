@@ -1,6 +1,7 @@
 package mainapp.components;
 
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import spotifyapi.SpotifyConnection;
@@ -32,7 +33,8 @@ public class GetUserDataButton extends JPanel {
         // Add an action listener to the button
         getSpotifyDataButton.addActionListener(e -> {
             // Change the size of the MainApp frame
-            mainAppFrame.setSize(750, 425);
+            int height = dataType.equals("SavedPlaylist") ? 425 : 900;
+            mainAppFrame.setSize(750, height);
 
             updatePrintDataPanel(dataType);
 
@@ -52,14 +54,10 @@ public class GetUserDataButton extends JPanel {
      * Updates the printDataPanel with the latest data depending on dataType.
      */
     private void updatePrintDataPanel(String dataType) {
-        try {
-            JPanel printDataPanel = (JPanel) cards.getComponent(1);
-            JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
-            dataLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            dataLabel.setText(buildDataString(fetchData(dataType)));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        JPanel printDataPanel = (JPanel) cards.getComponent(1);
+        JLabel dataLabel = (JLabel) printDataPanel.getClientProperty("printDataPanel");
+        dataLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        dataLabel.setText(buildDataString(fetchData(dataType)));
     }
 
 
@@ -76,6 +74,8 @@ public class GetUserDataButton extends JPanel {
                 dataString.append(formatTrackData(track));
             } else if (obj instanceof SavedTrack savedTrack) {
                 dataString.append(formatTrackData(savedTrack.getTrack()));
+            } else if (obj instanceof PlaylistSimplified playlist) {
+                dataString.append(formatPlaylistData(playlist));
             }
         }
 
@@ -98,19 +98,22 @@ public class GetUserDataButton extends JPanel {
     }
 
     /**
+     * Formats playlist data into a string.
+     */
+    private String formatPlaylistData(PlaylistSimplified playlist) {
+        return String.format("%s (%s)<br>", playlist.getName(), playlist.getId());
+    }
+
+    /**
      * Fetches data from Spotify based on the dataType passed in.
      */
     private Object[] fetchData(String dataType) {
-        try {
-            return switch (dataType) {
-                case "Artists" -> spotifyConnection.getTopArtists();
-                case "Tracks" -> spotifyConnection.getTopTracks();
-                case "SavedTracks" -> spotifyConnection.getSavedTracks();
-                default -> new Object[0]; // Return an empty array for unsupported types
-            };
-        } catch (Exception ex) {
-            System.err.println("Error fetching data for type: " + dataType + ". " + ex.getMessage());
-            return new Object[0]; // Return an empty array on error
-        }
+        return switch (dataType) {
+            case "Artists" -> spotifyConnection.getTopArtists();
+            case "Tracks" -> spotifyConnection.getTopTracks();
+            case "SavedTracks" -> spotifyConnection.getSavedTracks();
+            case "SavedPlaylists" -> spotifyConnection.getListOfCurrentUsersPlaylists();
+            default -> new Object[0]; // Return an empty array for unsupported types
+        };
     }
 }
