@@ -33,7 +33,7 @@ public class GetUserDataButton extends JPanel {
         // Add an action listener to the button
         getSpotifyDataButton.addActionListener(e -> {
             // Change the size of the MainApp frame
-            int height = dataType.equals("SavedPlaylist") ? 425 : 900;
+            int height = dataType.equals("SavedPlaylists") ? 900 : 425;
             mainAppFrame.setSize(750, height);
 
             updatePrintDataPanel(dataType);

@@ -179,6 +179,8 @@ public class SpotifyConnection {
 
     public PlaylistSimplified[] getListOfCurrentUsersPlaylists() {
         try {
+            Integer numPlaylists = spotifyApi.getListOfCurrentUsersPlaylists().build().execute().getTotal();
+            System.out.println(numPlaylists);
             return spotifyApi.getListOfCurrentUsersPlaylists().build().execute().getItems();
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
